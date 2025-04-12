@@ -35,7 +35,7 @@ const getArtistaPorNombre = async (req, res) => {
   }
 }
 
-/*const getArtistaPorId = async (req, res) => {
+const getArtistaPorId = async (req, res) => {
   const { id } = req.params
   try {
     const token = await getAccessToken()
@@ -54,7 +54,7 @@ const getArtistaPorNombre = async (req, res) => {
   } catch (error) {
     res.status(500).json({ status: 'error', msg: 'Error inesperado al obtener la información' })
   }
-}*/
+}
 
 const getTodosLosAlbunesDelArtista = async (req, res) => {
   const { id } = req.params
