@@ -20,7 +20,6 @@ const getArtistaPorNombre = async (req, res) => {
       }
 
       // Guardamos el artista en la base de datos
-      //database.insertArtista(resultado.nombre, resultado.id)
       database.verificarArtistaExistente(resultado.id, (existingArtista) => {
         if (!existingArtista) {
           database.insertArtista(resultado.nombre, resultado.id)
@@ -29,14 +28,14 @@ const getArtistaPorNombre = async (req, res) => {
         }
       })
 
-      res.status(200).json({ status: 'ok', data: resultado }) // response.data.artists.items
+      res.status(200).json({ status: 'ok', data: resultado })
     }
   } catch (error) {
     res.status(500).json({ status: 'error', msg: 'Error inesperado al obtener la información' })
   }
 }
 
-const getArtistaPorId = async (req, res) => {
+/*const getArtistaPorId = async (req, res) => {
   const { id } = req.params
   try {
     const token = await getAccessToken()
@@ -51,11 +50,11 @@ const getArtistaPorId = async (req, res) => {
     // Guardamos el artista en la base de datos
     database.insertArtistaDetalle(name, artistId, popularity, genres, followers.total)
 
-    res.status(200).json({ status: 'ok', data: { name, id: artistId, popularity, genres, followers } }) // response.data 
+    res.status(200).json({ status: 'ok', data: { name, id: artistId, popularity, genres, followers } })
   } catch (error) {
     res.status(500).json({ status: 'error', msg: 'Error inesperado al obtener la información' })
   }
-}
+}*/
 
 const getTodosLosAlbunesDelArtista = async (req, res) => {
   const { id } = req.params
@@ -94,7 +93,7 @@ const getArtistasFromDatabase = (req, res) => {
       console.error('Error real desde database:', err.message);
       return res.status(500).json({status: 'error', msg: 'Error inesperado al obtener la información', error: err.message })
     }
-    //console.log('Artistas encontrados:', artistas);
+    //console.log('Artistas encontrados:', artistas)
     res.status(200).json({ status: 'ok', data: artistas })
   })
 }

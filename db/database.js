@@ -42,10 +42,10 @@ class Database {
   //----------------------------[INSERTS]-------------------------------------
   //Funcion para insertar id y artista de '/search'
   insertArtista(nombre, id) {
-    const sql = `INSERT OR IGNORE INTO artistas (idArtista, nombre) VALUES (?, ?)`;
+    const sql = `INSERT INTO artistas (idArtista, nombre) VALUES (?, ?)`
     this.db.run(sql, [id, nombre],  (err) => {
       if (err) {
-        console.error('Error al insertar el artista:', err.message);
+        console.error('Error al insertar el artista:', err.message)
       } else {
         console.log(`Artista ${nombre} (${id}) guardado en la base de datos.`)
   
@@ -66,8 +66,8 @@ class Database {
   verificarArtistaExistente(id, callback) {
     this.db.get('SELECT * FROM artistas WHERE idArtista = ?', [id], (err, row) => {
       if (err) {
-        console.error('Error al consultar la base de datos', err);
-        return callback(null);
+        console.error('Error al consultar la base de datos', err)
+        return callback(null)
       }
       callback(row)
     })
@@ -76,7 +76,7 @@ class Database {
   //Procedimiento para almacenar los albunes de '/:id/albums'
   insertAlbum(name, release_date, artists,image, total_tracks) {
     const sql = `
-      INSERT OR IGNORE INTO albums (name, release_date, artists, image, total_tracks)
+      INSERT INTO albums (name, release_date, artists, image, total_tracks)
       VALUES (?, ?, ?, ?, ?)
     `
     const artistsString = JSON.stringify(artists)
@@ -90,31 +90,6 @@ class Database {
         //console.log(`Álbum "${name}" guardado en la base de datos.`)
       }
     })
-    /*this.db.run(sql, [name, release_date, artistsString, image, total_tracks], (err) => {
-      if (err) {
-        console.error('Error al insertar álbum:', err.message)
-      } else {
-        //console.log(`Álbum "${name}" guardado en la base de datos.`)
-        
-        this.db.all('SELECT * FROM albums', [], (err, rows) => {
-          if (err) {
-            console.error('Error al consultar álbumes:', err.message)
-          } else {
-            //console.log('Álbumes en la base de datos:')
-            rows.forEach(row => {
-              console.log({
-                id: row.id,
-                name: row.name,
-                release_date: row.release_date,
-                artists: JSON.parse(row.artists),
-                image: row.image,
-                total_tracks: row.total_tracks
-              })
-            })
-          }
-        })
-      }
-    })*/
   }
   //---------------------------[GETTERS]---------------------------------
 
