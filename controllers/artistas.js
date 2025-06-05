@@ -18,7 +18,6 @@ const getArtistaPorNombre = async (req, res) => {
         nombre: artista.name,
         id: artista.id
       }
-
       // Guardamos el artista en la base de datos
       database.verificarArtistaExistente(resultado.id, (existingArtista) => {
         if (!existingArtista) {
@@ -71,7 +70,8 @@ const getTodosLosAlbunesDelArtista = async (req, res) => {
       release_date: album.release_date,
       artists: album.artists.map(artist => artist.name),
       total_tracks: album.total_tracks,
-      image: album.images?.[0]?.url || null
+      image: album.images?.[0]?.url || null,
+      id: album.id //id del album
     }))
 
     //Guardamos los albumes en la base de datos
@@ -86,128 +86,8 @@ const getTodosLosAlbunesDelArtista = async (req, res) => {
   }
 }
 
-//-------------------------------[DataBase functions]----------------------------------------------------
-const getArtistasFromDatabase = (req, res) => {
-  database.getAllArtistas((err, artistas) => {
-    if (err) {
-      console.error('Error real desde database:', err.message);
-      return res.status(500).json({status: 'error', msg: 'Error inesperado al obtener la información', error: err.message })
-    }
-    //console.log('Artistas encontrados:', artistas)
-    res.status(200).json({ status: 'ok', data: artistas })
-  })
-}
-
-const getArtistaPorIdFromDB = (req, res) => {
-  const { id } = req.params;
-  database.getArtistaById(id, (err, artista) => {
-    if (err) {
-      return res.status(500).json({ status: 'error', msg: 'Error al buscar artista' })
-    }
-    if (!artista) {
-      return res.status(404).json({ status: 'error', msg: 'Artista no encontrado' })
-    }
-    res.status(200).json({ status: 'ok', data: artista })
-  })
-}
-
-const updateArtistaById = (req, res) => {
-  const { id } = req.params
-  const { nombre } = req.body
-
-
-  database.updateArtist(id,nombre, (err, result) => {
-    if (err) {
-      res.status(500).json({ status: 'error', msg: 'No se pudo actualizar la tabla' })
-    } else if (!result.updated) {
-      res.status(404).json({ status: 'error', msg: 'Tabla no encontrado' })
-    } else {
-      res.status(200).json({ status: 'ok', msg: 'Tabla actualizado correctamente' })
-    }
-  })
-}
-
-const deleteArtistaById = (req, res) => {
-  const  {id} = req.params
-
-  database.deleteArtista(id,(err,result) => {
-    if (err) {
-      res.status(500).json({ status: 'error', msg: 'No se pudo eliminar la tabla' })
-    } else if (!result.deleted) {
-      res.status(404).json({ status: 'error', msg: 'Tabla no encontrado' })
-    } else {
-      res.status(200).json({ status: 'ok', msg: 'Tabla eliminado correctamente' })
-    }
-  }) 
-}
-
-//-------------------------------------------------------------------
-
-const getAlbumsFromDatabase = (req, res) => {
-  database.getAllAlbums((err, albumes) => {
-    if (err) {
-      console.error('Error en getAllAlbums:', err.message);
-      res.status(500).json({ status: 'error', msg: 'Error al obtener los álbumes desde la base de datos' })
-    } else {
-      res.status(200).json({ status: 'ok', data: albumes })
-    }
-  })
-}
-
-const getAlbumPorIdFromDB = (req, res) => {
-  const { id } = req.params;
-  database.getAlbumById(id, (err, album) => {
-    if (err) {
-      return res.status(500).json({ status: 'error', msg: 'Error al buscar album' })
-    }
-    if (!album) {
-      return res.status(404).json({ status: 'error', msg: 'Album no encontrado' })
-    }
-    res.status(200).json({ status: 'ok', data: album })
-  })
-}
-
-const updateAlbumById = (req, res) => {
-  const { id } = req.params;
-  const { name, release_date, artists, image, total_tracks } = req.body;
-
-  database.updateAlbum(id, name, release_date, artists, image, total_tracks,  (err, result) => {
-    if (err) {
-      res.status(500).json({ status: 'error', msg: 'No se pudo actualizar el álbum' })
-    } else if (!result.updated) {
-      res.status(404).json({ status: 'error', msg: 'Álbum no encontrado' })
-    } else {
-      res.status(200).json({ status: 'ok', msg: 'Álbum actualizado correctamente' })
-    }
-  })
-}
-
-const deleteAlbumById = (req, res) => {
-  const { id } = req.params;
-
-  database.deleteAlbum(id, (err, result) => {
-    if (err) {
-      res.status(500).json({ status: 'error', msg: 'No se pudo eliminar el álbum' })
-    } else if (!result.deleted) {
-      res.status(404).json({ status: 'error', msg: 'Álbum no encontrado' })
-    } else {
-      res.status(200).json({ status: 'ok', msg: 'Álbum eliminado correctamente' })
-    }
-  })
-}
-
-
 module.exports = {
   getArtistaPorNombre,
   getArtistaPorId,
-  getTodosLosAlbunesDelArtista,
-
-  getAlbumsFromDatabase,
-  getAlbumPorIdFromDB,
-  updateAlbumById,
-  deleteAlbumById,
-  getArtistasFromDatabase,
-  getArtistaPorIdFromDB,
-  updateArtistaById,
-  deleteArtistaById
+  getTodosLosAlbunesDelArtista
 }

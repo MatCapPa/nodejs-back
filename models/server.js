@@ -19,6 +19,7 @@ class Server {
 
   rutas () {
     this.app.use('/api', require('../routes/artistas'))
+    this.app.use('/db', require('../routes/database'))
   }
 
   listen () {
