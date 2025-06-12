@@ -208,7 +208,7 @@ class Database {
     })
   }
 
-    getALLTracks(callback) {
+    getAllTracks(callback) {
       const sql = 'SELECT * FROM tracks'
       let data = { array: [] }
     

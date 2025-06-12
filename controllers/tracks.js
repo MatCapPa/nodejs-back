@@ -1,5 +1,6 @@
 const { getAccessToken } = require('../models/auth')
 const axios = require('axios')
+const database = require('../db/database.js')
 
 
 const getTracksforAlbum = async (req, res) => {
@@ -17,7 +18,11 @@ const getTracksforAlbum = async (req, res) => {
                 id: track.id,
                 track_number: track.track_number
             }))
-   
+
+            tracks.forEach(track =>{
+                database.insertTrack(track.name, track.id, track.track_number)
+            })
+            
         res.status(200).json({ status: 'ok', data: tracks })
     } catch (error) {
         res.status(500).json({ status: 'error', msg: 'Error inesperado al obtener la información' })

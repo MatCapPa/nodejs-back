@@ -110,6 +110,61 @@ const deleteAlbumById = (req, res) => {
   })
 }
 
+//-------------------------------------------------------------------
+
+const getTracksFromDatabase = (req, res) => {
+  database.getAllTracks((err, tracks) => {
+    if (err) {
+      console.error('Error en getAllTracks:', err.message);
+      res.status(500).json({ status: 'error', msg: 'Error al obtener los tracks desde la base de datos' })
+    } else {
+      res.status(200).json({ status: 'ok', data: tracks })
+    }
+  })
+}
+
+const getTrackByIdFromDB = (req, res) => {
+  const { id } = req.params;
+  database.getTrackById(id, (err, track) => {
+    if (err) {
+      return res.status(500).json({ status: 'error', msg: 'Error al buscar el track' })
+    }
+    if (!track) {
+      return res.status(404).json({ status: 'error', msg: 'Track no encontrado' })
+    }
+    res.status(200).json({ status: 'ok', data: track })
+  })
+}
+
+const updateTrackById = (req, res) => {
+  const { id } = req.params;
+  const { name, track_number } = req.body;
+
+  database.updateTrack(id, name, track_number,  (err, result) => {
+    if (err) {
+      res.status(500).json({ status: 'error', msg: 'No se pudo actualizar el track' })
+    } else if (!result.updated) {
+      res.status(404).json({ status: 'error', msg: 'Track no encontrado' })
+    } else {
+      res.status(200).json({ status: 'ok', msg: 'Track actualizado correctamente' })
+    }
+  })
+}
+
+const deleteTrackById = (req, res) => {
+  const { id } = req.params;
+
+  database.deleteTrack(id, (err, result) => {
+    if (err) {
+      res.status(500).json({ status: 'error', msg: 'No se pudo eliminar el track' })
+    } else if (!result.deleted) {
+      res.status(404).json({ status: 'error', msg: 'Track no encontrado' })
+    } else {
+      res.status(200).json({ status: 'ok', msg: 'Track eliminado correctamente' })
+    }
+  })
+}
+
 module.exports = {
     getAlbumsFromDatabase,
     getAlbumPorIdFromDB,
@@ -118,5 +173,9 @@ module.exports = {
     getArtistasFromDatabase,
     getArtistaPorIdFromDB,
     updateArtistaById,
-    deleteArtistaById
+    deleteArtistaById,
+    getTracksFromDatabase,
+    getTrackByIdFromDB,
+    updateTrackById,
+    deleteTrackById
 }

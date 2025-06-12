@@ -1,6 +1,5 @@
 const { Router } = require('express')
 const { getArtistaPorNombre, getTodosLosAlbunesDelArtista, getArtistaPorId} = require('../controllers/artistas')
-
 const { getTracksforAlbum } = require('../controllers/tracks')
 
 const rutas = Router()
