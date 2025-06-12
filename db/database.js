@@ -12,11 +12,11 @@ class Database {
     this.createTables()
   }
 
-  createTables() {
+  createTables() { 
     const queries = [
       `CREATE TABLE IF NOT EXISTS artistas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        idArtista TEXT NOT NULL UNIQUE,
+        idArtista TEXT NOT NULL UNIQUE, 
         nombre TEXT NOT NULL
       )`,
       `CREATE TABLE IF NOT EXISTS albums (
@@ -26,8 +26,16 @@ class Database {
         artists TEXT NOT NULL,
         image TEXT UNIQUE,
         total_tracks INTEGER
+        SpotifyIdAlbum TEXT NOT NULL UNIQUE
+      )`,
+      `CREATE TABLE IF NOT EXISTS tracks(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        SpotifyIdTrack TEXT NOT NULL UNIQUE,
+        track_number INT NOT NULL 
       )`
-    ]
+    ]  // en la tabla albums, agregar SpotifyId y guardar el id del artista; tambien agregarlos en los getters.
+    //en la tabla artistas cambiar para que sea SpotifyIdArtist y no idArtista
 
     queries.forEach((query) => {
       this.db.run(query, (err) => {
@@ -88,6 +96,20 @@ class Database {
         console.log(`Álbum "${name}" ya existe. No se insertó.`)
       } else {
         //console.log(`Álbum "${name}" guardado en la base de datos.`)
+      }
+    })
+  }
+
+  insertTrack(name, id, track_number) {
+    const sql = `
+      INSERT INTO tracks (name, SpotifyId, track_number)
+      VALUES (?,?,?)
+    `
+    this.db.run(sql, [name, id, track_number], (err) => {
+      if (err) {
+        console.error('Error al insertar track:', err.message)
+      } else {
+        //console.log("track guardado")
       }
     })
   }
@@ -154,7 +176,7 @@ class Database {
   
       data.array = rows.map(row => ({
         id: row.id,
-        idArtist: row.idArtista,
+        idArtista: row.idArtista,   //cambiar la base de datos para que sea idArtista
         nombre: row.nombre
       }))
 
@@ -177,7 +199,7 @@ class Database {
   
       const data = {
         id: row.id,
-        idArtist: row.idArtista,
+        idArtista: row.idArtista,  //cambiar la base de datos para que sea idArtista
         nombre: row.nombre
       }
 
@@ -185,6 +207,49 @@ class Database {
       
     })
   }
+
+    getALLTracks(callback) {
+      const sql = 'SELECT * FROM tracks'
+      let data = { array: [] }
+    
+      this.db.all(sql, [], (err, rows) => {
+        if (err) {
+          console.error('Error al obtener los tracks:', err.message)
+          callback(err)
+        }
+    
+        data.array = rows.map(row => ({
+          id: row.id,
+          name: row.name,   
+          track_number: row.track_number,
+          spotifyid: row.SpotifyId
+        }))
+        callback(null, data)
+      })
+    }
+
+    getTrackById(id ,callback) {
+      const sql = 'SELECT * FROM tracks WHERE id = ?'
+      let data = { array: [] }
+    
+      this.db.all(sql, [id], (err, rows) => {
+        if (err) {
+          console.error('Error al obtener los tracks:', err.message)
+          callback(err)
+        }
+        if (!row) {
+          // No se encontró ningún track con ese ID
+          return callback(null, null)
+        }
+        data.array = rows.map(row => ({
+          id: row.id,
+          name: row.name,   
+          track_number: row.track_number,
+          spotifyid: row.SpotifyId
+        }))
+        callback(null, data)
+      })
+    }
 
   //---------------------------[UPDATE]---------------------------------
   updateAlbum(id, name, release_date, artists, image, total_tracks, callback) {
@@ -221,6 +286,23 @@ class Database {
     })
   }
 
+  updateTrack(name,id,track_number,callback) {
+    const sql = `
+     UPDATE tracks
+     SET name = ? , track_number = ?
+     WHERE id = ?
+    `
+
+    this.db.run(sql, [name,track_number,id], (err) => {
+      if (err) {
+        console.error('Error al actualizar la tabla tracks:', err.message);
+        callback(err);
+      }
+      else {
+        callback(null, {updated: this.changes > 0})
+      }
+    })
+  }
   //---------------------------[DELETE]---------------------------------
   deleteAlbum(id, callback) {
     const sql = `DELETE FROM albums WHERE id = ?`
@@ -246,6 +328,18 @@ class Database {
     })
   }
 
+  deleteTrack(id, callback) {
+    const sql = `DELETE FROM tracks WHERE id = ?`
+    this.db.run(sql, [id], function (err) {
+      if (err) {
+        console.error('Error al eliminar la tabla tracks:', err.message)
+        callback(err)
+      } else {
+        callback(null, { deleted: this.changes > 0 })
+      }
+    })
+  }
+//----------------------------------------------------------------------------
   getConnection() {
     return this.db
   }
