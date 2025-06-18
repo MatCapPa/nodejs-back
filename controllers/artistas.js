@@ -34,27 +34,6 @@ const getArtistaPorNombre = async (req, res) => {
   }
 }
 
-const getArtistaPorId = async (req, res) => {
-  const { id } = req.params
-  try {
-    const token = await getAccessToken()
-    const response = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    
-    const { name, id: artistId, popularity, genres, followers } = response.data
-
-    // Guardamos el artista en la base de datos
-    database.insertArtistaDetalle(name, artistId, popularity, genres, followers.total)
-
-    res.status(200).json({ status: 'ok', data: { name, id: artistId, popularity, genres, followers } })
-  } catch (error) {
-    res.status(500).json({ status: 'error', msg: 'Error inesperado al obtener la información' })
-  }
-}
-
 const getTodosLosAlbunesDelArtista = async (req, res) => {
   const { id } = req.params
   try {
@@ -76,7 +55,7 @@ const getTodosLosAlbunesDelArtista = async (req, res) => {
 
     //Guardamos los albumes en la base de datos
     albums.forEach(album => {
-      database.insertAlbum(album.name, album.release_date, album.artists, album.image, album.total_tracks)
+      database.insertAlbum(album.name, album.release_date, album.artists, album.image, album.total_tracks, album.id)
     })
     console.log(albums)
     res.status(200).json({ status: 'ok', data: albums })
@@ -88,6 +67,5 @@ const getTodosLosAlbunesDelArtista = async (req, res) => {
 
 module.exports = {
   getArtistaPorNombre,
-  getArtistaPorId,
   getTodosLosAlbunesDelArtista
 }
