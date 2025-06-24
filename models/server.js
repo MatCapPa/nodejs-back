@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const database = require('../db/database.js')
+const validarApiKey = require('../models/api_key.js')
 
 class Server {
   constructor () {
@@ -19,7 +20,7 @@ class Server {
 
   rutas () {
     this.app.use('/api', require('../routes/artistas'))
-    this.app.use('/db', require('../routes/database'))
+    this.app.use('/db', validarApiKey, require('../routes/database'))
   }
 
   listen () {
