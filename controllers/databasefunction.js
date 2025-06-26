@@ -83,9 +83,9 @@ const getAlbumPorIdFromDB = (req, res) => {
 
 const updateAlbumById = (req, res) => {
   const { id } = req.params;
-  const { name, release_date, artists, image, total_tracks } = req.body;
+  const { name, release_date, total_tracks } = req.body;
 
-  database.updateAlbum(id, name, release_date, artists, image, total_tracks,  (err, result) => {
+  database.updateAlbum(id, name, release_date, total_tracks,  (err, result) => {
     if (err) {
       res.status(500).json({ status: 'error', msg: 'No se pudo actualizar el álbum' })
     } else if (!result.updated) {

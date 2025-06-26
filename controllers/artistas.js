@@ -50,7 +50,7 @@ const getTodosLosAlbunesDelArtista = async (req, res) => {
       artists: album.artists.map(artist => artist.name),
       total_tracks: album.total_tracks,
       image: album.images?.[0]?.url || null,
-      id: album.id //id del album
+      id: album.id //spotifyid del album
     }))
 
     //Guardamos los albumes en la base de datos

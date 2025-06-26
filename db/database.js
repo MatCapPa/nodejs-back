@@ -7,9 +7,9 @@ class Database {
         console.error('Error al conectar con la base de datos:', err.message)
       } else {
         console.log('Conectado a la base de datos SQLite.')
+        this.createTables()
       }
     })
-    this.createTables()
   }
 
   createTables() { 
@@ -55,7 +55,7 @@ class Database {
         console.error('Error al insertar el artista:', err.message)
       } else {
         console.log(`Artista ${nombre} (${id}) guardado en la base de datos.`)
-  
+        //db.run("COMMIT")
         // Mostrar todos los artistas después de insertar
         
         this.db.all(`SELECT * FROM artistas`, [], (err, rows) => {
@@ -247,14 +247,14 @@ class Database {
     }
 
   //---------------------------[UPDATE]---------------------------------
-  updateAlbum(id, name, release_date, artists, image, total_tracks, callback) {
+  updateAlbum(id, name, release_date, total_tracks, callback) {
     const sql = `
       UPDATE albums
-      SET name = ?, release_date = ?, artists = ?, image = ?, total_tracks = ?
+      SET name = ?, release_date = ?, total_tracks = ?
       WHERE id = ?
     `
-    const artistsString = JSON.stringify(artists)
-    this.db.run(sql, [name, release_date, artistsString, image, total_tracks, id], function (err) {
+    //const artistsString = JSON.stringify(artists)
+    this.db.run(sql, [name, release_date, total_tracks, id], function (err) {
       if (err) {
         console.error('Error al actualizar la tabla albums:', err.message)
         callback(err)
