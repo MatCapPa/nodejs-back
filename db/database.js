@@ -198,6 +198,7 @@ class Database {
       const data = {
         id: row.id,
         SpotifyIdArtist: row.SpotifyIdArtist,
+        nombre: row.nombre
       }
 
       callback(null, data)  
