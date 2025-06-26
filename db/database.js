@@ -282,7 +282,7 @@ class Database {
     })
   }
 
-  updateTrack(name,id,track_number,callback) {
+  updateTrack(id,name,track_number,callback) {
     const sql = `
      UPDATE tracks
      SET name = ? , track_number = ?
