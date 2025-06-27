@@ -289,7 +289,7 @@ class Database {
      WHERE id = ?
     `
 
-    this.db.run(sql, [name,track_number,id], (err) => {
+    this.db.run(sql, [name,track_number,id], function (err) {
       if (err) {
         console.error('Error al actualizar la tabla tracks:', err.message);
         callback(err);

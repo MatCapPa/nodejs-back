@@ -82,7 +82,9 @@ const getAlbumPorIdFromDB = (req, res) => {
 }
 
 const updateAlbumById = (req, res) => {
-  const { id } = req.params;
+  //const { id } = req.params;
+  const id = parseInt(req.params.id);
+
   const { name, release_date, total_tracks } = req.body;
 
   database.updateAlbum(id, name, release_date, total_tracks,  (err, result) => {
